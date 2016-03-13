@@ -1,4 +1,6 @@
 language: node_js
+node_js:
+  - '5'
 deploy:
   provider: npm
   email: csaba.tuncsik@gmail.com
