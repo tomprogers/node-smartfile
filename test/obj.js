@@ -20,6 +20,7 @@ describe('obj', () => {
         expect(obj.isObj(null)).to.equal(false);
         expect(obj.isObj(1)).to.equal(false);
         expect(obj.isObj('1')).to.equal(false);
+		expect(obj.isObj(function(){})).to.equal(false);
         expect(obj.isObj([])).to.equal(false);
         expect(obj.isObj({})).to.equal(true);
     });

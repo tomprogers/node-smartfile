@@ -1,6 +1,6 @@
 export default (() => {
 
-    const isObj = obj => obj !== undefined && obj !== null && Object.getPrototypeOf(obj) === Object.prototype;
+    const isObj = obj => !!obj && Object.getPrototypeOf(obj) === Object.prototype;
     const clone = obj => {
         let cloned = Array.isArray(obj) ? [] : {};
         Object.keys(obj).forEach(key => {

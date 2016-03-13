@@ -12,7 +12,7 @@ describe('arr', () => {
         expect(testArr.indexOf(rndItem) > -1).to.equal(true);
     });
 
-    it('shuffle should reorder array elements', () => {
+    it('shuffle should reorder array elements (not mutating)', () => {
         let shuffled = arr.shuffle(testArr);
         expect(testArr.toString() !== shuffled.toString()).to.equal(true);
     });

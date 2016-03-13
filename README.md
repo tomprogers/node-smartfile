@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cstuncsik/es6-node-module-boilerplate=master)](https://travis-ci.org/cstuncsik/es6-node-module-boilerplate) [![npm version](https://badge.fury.io/js/es6-node-module-boilerplate.svg)](https://badge.fury.io/js/es6-node-module-boilerplate) [![Dependency Status](https://www.versioneye.com/user/projects/56e5bca7df573d003a5f5f99/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e5bca7df573d003a5f5f99)
+
 ## License
 
 Copyright © 2016 Csaba Tuncsik <csaba.tuncsik@gmail.com>
