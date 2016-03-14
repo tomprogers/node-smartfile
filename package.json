@@ -1,6 +1,6 @@
 {
   "name": "es6-node-module-boilerplate",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "ES6 node module boilerplate",
   "license": "WTFPL",
   "repository": "cstuncsik/es6-node-module-boilerplate",
@@ -31,6 +31,6 @@
     "mocha": "^2.4.5"
   },
   "engines": {
-    "node": ">6 <=5"
+    "node": ">=4"
   }
 }
