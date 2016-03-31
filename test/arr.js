@@ -17,4 +17,9 @@ describe('arr', () => {
         expect(testArr.toString() !== shuffled.toString()).to.equal(true);
     });
 
+    it('range should create an array of integers', () => {
+        let nums = arr.range(3, 9);
+        expect(nums).to.deep.equal([3, 4, 5, 6, 7, 8, 9]);
+    });
+
 });

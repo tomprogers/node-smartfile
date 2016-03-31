@@ -22,7 +22,7 @@ describe('mat', () => {
             let num = mat.rand.int(min, max);
             expect(num).to.be.a('number');
             expect(num % 1 === 0).to.equal(true);
-            expect(num >= min && num < max).to.equal(true);
+            expect(num >= min && num <= max).to.equal(true);
         });
 
         it('bool should generate a random boolean', () => {
