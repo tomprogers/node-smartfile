@@ -1,12 +1,18 @@
+sudo: false
 language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  email: false
 node_js:
-- "5"
-deploy:
-  provider: npm
-  email: csaba.tuncsik@gmail.com
-  api_key:
-    secure: BAiNTcg1wx331lgWVFpUQnBtg70joUYZ/rZDYXPoaZEnNhpuszsMEzKNGt1yTE7UmtrhXqplWjjfsLxBkYdi3bpHa1t03MtYO0gAIJUckYRi9tjo4aUZMG4KUNqzDUvnBgw2q4IQkGgxlUV39Op3c+nKo5h4MeFnuQjzGo1jy3wGMQRY6vfhsqF48Zt5BYboHLMK2D9lISwKcfILJA/jvk0VXnSAtCWy/+YIyFCzrW6CkCx+sQcVbD0JkZBA2WxFrVPk8s3gN/nuvZeSX5InetPzbOtrJbFamUHL6kxgTxJE2r7K+zrYmiXlx8oUeQQ90WLrMMhJUDW9V2lmKXdpKdCyyuG57gi1RDfIJpEEgSWj4ZRFNoMmjkXJlAEeOMnxQbyOe0vYy25z1uvlDPZHGq7XdTVLmZF4AoH6wTW6dW9DAj1cPiO3/nmi6QDwr9rzew2KXVdSnS63QsIOsxEbZgYjfxSKZScdLGOBzntUykfDBGuMQTSeywyGqo/fqHj19qTlXdPdueNNVv2y8J/yl6SEDM+UyvxXDQmd2dtxK9F/8+IQlC2ZopNW0ARwRJsEhJ/JhYojBJ1oiQwSeaW2xmCX11TVcRQEXro1hbLrdOWeWlAFgmegLqvlS5RpAnh87f4EBPoz2IQtKbgxqZQh7Nsz31MDILzbgvfHLTOWcMg=
-  on:
-    tags: true
-    repo: cstuncsik/es6-node-module-boilerplate
-  skip_cleanup: true
+  - '5'
+before_install:
+  - npm i -g npm@^2.0.0
+before_script:
+  - npm prune
+after_success:
+  - npm run semantic-release
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
