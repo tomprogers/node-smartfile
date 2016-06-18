@@ -3,7 +3,9 @@ import obj from '../src/obj';
 
 const expect = chai.expect;
 
-let testArr = [0, 1, true, 'three', 4, [5, 6], {key: 'value'}, a => Math.sqrt(a)];
+let testArr = [0, 1, true, 'three', 4, [5, 6], {
+    key: 'value'
+}, a => Math.sqrt(a)];
 let testObj = {
     arr: obj.clone(testArr),
     deep: {
@@ -20,7 +22,7 @@ describe('obj', () => {
         expect(obj.isObj(null)).to.equal(false);
         expect(obj.isObj(1)).to.equal(false);
         expect(obj.isObj('1')).to.equal(false);
-		expect(obj.isObj(function(){})).to.equal(false);
+        expect(obj.isObj(function() {})).to.equal(false);
         expect(obj.isObj([])).to.equal(false);
         expect(obj.isObj({})).to.equal(true);
     });

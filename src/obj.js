@@ -10,6 +10,9 @@ export default (() => {
         return cloned;
     };
 
-    return {isObj, clone};
+    return {
+        isObj,
+        clone
+    };
 
 })();

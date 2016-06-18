@@ -5,7 +5,11 @@ export default (() => {
     const bool = () => Math.random() > 0.5;
 
     return {
-        rand: {flot, int, bool}
+        rand: {
+            flot,
+            int,
+            bool
+        }
     };
 
 })();

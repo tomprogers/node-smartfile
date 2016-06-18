@@ -6,6 +6,10 @@ export default (() => {
     }([]);
     const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
 
-    return {partial, curry, compose};
+    return {
+        partial,
+        curry,
+        compose
+    };
 
 })();

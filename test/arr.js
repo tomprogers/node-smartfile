@@ -3,7 +3,9 @@ import arr from '../src/arr';
 
 const expect = chai.expect;
 
-let testArr = [0, 1, true, 'three', 4, [5, 6], {key: 'value'}, a => Math.sqrt(a)];
+let testArr = [0, 1, true, 'three', 4, [5, 6], {
+    key: 'value'
+}, a => Math.sqrt(a)];
 
 describe('arr', () => {
 
