@@ -4,7 +4,7 @@ export default (() => {
     const curry = fn => function curried(cargs) {
         return cargs.length >= fn.length ? fn.apply(this, cargs) : (...args) => curried([...cargs, ...args])
     }([]);
-    const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
+    const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g.apply(null, [...args])));
 
     return {
         partial,
