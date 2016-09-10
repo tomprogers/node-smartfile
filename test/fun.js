@@ -5,6 +5,7 @@ const expect = chai.expect;
 const add3Numbers = (a, b, c) => a + b + c;
 const partialAdd3Numbers = fun.partial(add3Numbers);
 const curriedAdd3Numbers = fun.curry(add3Numbers);
+const pow = fun.partialRight(Math.pow);
 
 describe('fun', () => {
 
@@ -20,13 +21,21 @@ describe('fun', () => {
     });
 
     it('compose should compose functions', () => {
-        let pow = fun.curry((exp, base) => Math.pow(base, exp));
         let ƒ = fun.compose(
             Math.sqrt,
-            pow(2),
-            curriedAdd3Numbers(1, 2)
+            curriedAdd3Numbers(5, 6),
+            pow(2)
         );
-        expect(ƒ(4) === 7).to.equal(true);
+        expect(ƒ(5) === 6).to.equal(true);
+    });
+
+    it('pipe should pipe functions', () => {
+        let ƒ = fun.pipe(
+            pow(2),
+            curriedAdd3Numbers(5, 6),
+            Math.sqrt
+        );
+        expect(ƒ(5) === 6).to.equal(true);
     });
 
 });
