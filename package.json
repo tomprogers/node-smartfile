@@ -17,6 +17,7 @@
     "prepublish": "npm run compile",
     "start": "mocha --watch --compilers js:babel-register",
     "test": "mocha --compilers js:babel-register",
+    "lint": "standard",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "main": "lib/index.js",
@@ -40,11 +41,23 @@
     "commitizen": "^2.9.4",
     "cz-conventional-changelog": "^2.0.0",
     "mocha": "^3.4.0",
-    "semantic-release": "^6.3.2"
+    "semantic-release": "^6.3.2",
+    "standard": "^10.0.2"
   },
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "standard": {
+    "ignore": [
+      "lib"
+    ],
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true,
+      "mocha": true
     }
   }
 }

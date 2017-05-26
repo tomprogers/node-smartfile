@@ -1,19 +1,14 @@
-export default (() => {
+const partial = fn => (...pargs) => (...args) => fn(...pargs, ...args)
+const partialRight = fn => (...pargs) => (...args) => fn(...args, ...pargs.reverse())
+const curry = (f, arr = []) => (...args) => (a => a.length === f.length ? f(...a) : curry(f, a))([...arr, ...args])
+const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x)
+const pipe = (...fns) => compose(...fns.reverse())
 
-    const partial = fn => (...pargs) => (...args) => fn.apply(null, [...pargs, ...args]);
-    const partialRight = fn => (...pargs) => (...args) => fn.apply(null, [...args, ...pargs.reverse()]);
-    const curry = fn => function curried(cargs) {
-        return cargs.length >= fn.length ? fn.apply(this, cargs) : (...args) => curried([...cargs, ...args])
-    }([]);
-    const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g.apply(null, [...args])));
-    const pipe = (...fns) => compose.apply(null, [...fns.reverse()]);
 
-    return {
-        partial,
-        partialRight,
-        curry,
-        compose,
-        pipe
-    };
-
-})();
+export default {
+  partial,
+  partialRight,
+  curry,
+  compose,
+  pipe
+}

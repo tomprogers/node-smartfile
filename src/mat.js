@@ -1,15 +1,12 @@
-export default (() => {
+const flot = (min, max) => Math.random() * (max - min) + min
+const int = (min, max) => flot(min, max + 1) | 0
+const bool = () => Math.random() > 0.5
 
-    const flot = (min, max) => Math.random() * (max - min) + min;
-    const int = (min, max) => flot(min, max + 1) | 0;
-    const bool = () => Math.random() > 0.5;
 
-    return {
-        rand: {
-            flot,
-            int,
-            bool
-        }
-    };
-
-})();
+export default {
+  rand: {
+    flot,
+    int,
+    bool
+  }
+}
