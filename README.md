@@ -2,6 +2,10 @@
 
 Sugar for managing text files. Especially useful for loading and saving data like user preferences and other reasonably-sized structured data in OS-conventional locations.
 
+### `new Smartfile( path , options )`
+### `data = smartfile.read({ async: false })`
+### `smartfile.write( reduxStore )`
+
 
 ## Table of Contents
 
@@ -137,7 +141,7 @@ file.write({initial_value:true}) // async write
 ```
 
 ```javascript
-// define options for a standard file format, then read and write any file assuming that format
+// define options for a standard file format, then read and write several files in that format
 
 let pets = {
     'Fluffy': { species: 'cat' , ageInYears: 8 },
@@ -145,22 +149,32 @@ let pets = {
     'Gruffy': { species: 'cat', ageInYears: 14 }
 }
 
-let petfile = new Smartfile({ async: false })
+let petfile = new Smartfile({ json: false })
 
 Object.keys(pets).forEach(petName => {
+    let petData = pet2customDataFormat(pets[petName])
     // even path can be overriden
-    petfile.write(pets[petName], {path:`./data/pets-by-name/${petName}.json`})
+    petfile.write(petData, {path:`./data/pets-by-name/${petName}.pet`})
 })
 ```
 
 Reading and writing are trivial.
 
 ```javascript
+
 // read data
-file.read([path[, options]]) //=> obj
+file.read()
+file.read(path)
+file.read(options)
+file.read(path, options)
+//=> value
 
 // write data
-file.write(path, value, options) //=> undefined
+file.write() //> writes a blank file! be careful
+file.write(value)
+file.write(value, options)
+file.write(path, value, options)
+//=> undefined
 ```
 
 
@@ -177,6 +191,6 @@ Has not (yet) been tested on Windows, or against an NTFS filesystem. I tried to 
 
 # License
 
-Copyright © 2017 Tom Rogers <tom@roguevendor.com>
+Copyright © 2017 Tom Rogers  <tom@roguevendor.com>
 
 This work is mine. You can't do anything with it yet. Once I declare it finished, I may grant you some rights.
