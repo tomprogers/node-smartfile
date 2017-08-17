@@ -1,1 +1,2 @@
-export default from './smartfile'
+import S from './smartfile'
+export default S
