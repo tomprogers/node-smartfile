@@ -1,9 +1,182 @@
-[![Build Status](https://travis-ci.org/cstuncsik/es6-node-module-boilerplate.svg?branch=master)](https://travis-ci.org/cstuncsik/es6-node-module-boilerplate) [![npm version](https://badge.fury.io/js/es6-node-module-boilerplate.svg)](https://badge.fury.io/js/es6-node-module-boilerplate) [![Dependency Status](https://www.versioneye.com/user/projects/56e5bca7df573d003a5f5f99/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e5bca7df573d003a5f5f99) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+# smartfile
 
-## License
+Sugar for managing text files. Especially useful for loading and saving data like user preferences and other reasonably-sized structured data in OS-conventional locations.
 
-Copyright © 2016 Csaba Tuncsik <csaba.tuncsik@gmail.com>
 
-This work is free. You can redistribute it and/or modify it under the
-terms of the Do What The Fuck You Want To Public License, Version 2,
-as published by Sam Hocevar. See [WTFPL](http://www.wtfpl.net) ![WTFPL icon](http://i.imgur.com/AsWaQQl.png) for more details.
+## Table of Contents
+
+* [Installation](#installation)
+* [Usage](#usage)
+  * [Async](#async)
+  * [Sync](#sync)
+  * [Handling errors](#handling-errors)
+* [API reference](#api-reference)
+* [Caveats](#caveats)
+* [Supported environments](#support)
+
+
+## Installation
+
+* `npm install node-smartfile --save`
+
+* `yarn add node-smartfile`
+
+
+## Usage
+
+For a more comprehensive API reference that this polyfill supports, refer to
+https://github.github.io/fetch/.
+
+### Async
+
+```javascript
+import Smartfile from 'node-smartfile'
+
+const userPrefs = new Smartfile(`~/Library/Preferences/MyApp/user1.myapp-settings`)
+
+
+function saveUserPrefs(newPrefs=DefaultUserPreferences) {
+    return userPrefs.write(newPrefs) // resolves with undefined
+    //> directories created, file written
+}
+
+function readUserPrefs() {
+    return userPrefs.read() // resolves with the content of the file
+}
+```
+
+### Sync
+
+```javascript
+import Smartfile from 'node-smartfile'
+const userPrefs = new Smartfile(`~/Library/Preferences/MyApp/user2.myapp-settings`, { async: false })
+
+function getPrefByName(name) {
+    let prefs = userPrefs.read()
+    return prefs[name]
+}
+```
+
+
+### Handling errors
+
+Smartfile methods can throw any error thrown by methods in the native node `fs` module, including:
+
+*  `readFile` & `readFileSync`
+*  `writeFile` & `writeFileSync`
+*  `mkdir` & `mkdirSync`
+*  `access` & `accessSync`
+
+Also, when working with `json` files, you may see any of the errors thrown by `JSON.parse` & `JSON.stringify`:
+
+* `unexpected token %t at position %p` (file contents not valid as JSON)
+* stringification failure for objects with circular references
+
+However, Smartfile's "smartness" lies in the fact that it swallows and provides default handling for a few error scenarios:
+
+* `ENOENT` (when attempting to read a path that doesn't exist)
+  ignores the error, returns `undefined`
+* `EEXIST` (when attempting to create a directory that already exists)
+  ignores the error, moves on to create nested directory or write file
+
+
+## API reference
+
+```javascript
+// initialize a smartfile
+let file = new Smartfile(path)
+let file = new Smartfile(options)
+let file = new Smartfile(path, options)
+let file = new Smartfile(path, options, initialContent)
+
+// all the options
+let file = new Smartfile({
+    path: String // required; may be relative or absolute
+    
+    // whether FS operations should be asynchronous
+    async: Boolean, // default: true
+    
+    // Smartfile overrides some underlying methods by default
+    encoding: String, // default: 'utf8'
+    
+    // read & write will marshall to and from JSON automatically
+    json: Boolean, // default: true
+    
+    // JSON.stringify(value, replacer, space)
+    replacer: Function(key, value) | Array // default: null
+    space: Number | String // default: null
+    
+    // JSON.parse(string, reviver)
+    reviver: Function(key, value) // default: null
+    
+    // any other properties are passed down to core nodejs methods
+    ...opts
+})
+```
+
+**Every option can be overriden at any call site.**
+
+```javascript
+// e.g. create an async smartfile, then switch to synchronous use
+let file = new Smartfile(path) // default async:true
+
+file.write({initial_value:true}) // async write
+.then(() => {
+    // switch to synchronous use
+    let content = file.read({ async:false }) //=> '{"initial_value":true}'
+    
+    // overrides at .read and .write don't become permanent
+    // must continue to specify async:false
+    file.write({initial_value:false}, { async: false })
+    
+    // these both produce the same results
+    return file.read() // returns promise that becomes resolution value of write.then
+    return file.read({async:false}) // blocks for read, then returns JSON object, which becomes resolution value of write.then
+})
+//=> resolves with {"initial_value":false}
+```
+
+```javascript
+// define options for a standard file format, then read and write any file assuming that format
+
+let pets = {
+    'Fluffy': { species: 'cat' , ageInYears: 8 },
+    'Puffy': { species: 'dog', ageInYears: 10 },
+    'Gruffy': { species: 'cat', ageInYears: 14 }
+}
+
+let petfile = new Smartfile({ async: false })
+
+Object.keys(pets).forEach(petName => {
+    // even path can be overriden
+    petfile.write(pets[petName], {path:`./data/pets-by-name/${petName}.json`})
+})
+```
+
+Reading and writing are trivial.
+
+```javascript
+// read data
+file.read([path[, options]]) //=> obj
+
+// write data
+file.write(path, value, options) //=> undefined
+```
+
+
+## Caveats
+
+Has not (yet) been tested on Windows, or against an NTFS filesystem. I tried to be OS-agnostic, but something may have slipped through.
+
+
+## Support
+
+- node
+- Electron
+- ~~react-native~~
+
+# License
+
+Copyright © 2017 Tom Rogers <tom@roguevendor.com>
+
+This work is mine. You can't do anything with it yet. Once I declare it finished, I may grant you some rights.
