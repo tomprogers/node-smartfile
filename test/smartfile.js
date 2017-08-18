@@ -9,7 +9,7 @@ const assert = chai.assert
 import mockfs from 'mock-fs'
 
 
-import Smartfile from '../src/smartfile'
+import Smartfile from '../src'
 
 
 describe(`Smartfile`, function() {
