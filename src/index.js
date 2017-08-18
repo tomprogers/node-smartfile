@@ -20,7 +20,7 @@ const DefaultOptions = {
 export default class Smartfile {
 	constructor(path, options) {
 		// if arg is a string, treat it as .path and merge with defaults
-		// if arg is hash, merge it directly
+		// if arg is hash, merge it with defaults
 		// otherwise, ignore it
 		this.config = Object.assign({},
 			DefaultOptions,
@@ -33,12 +33,45 @@ export default class Smartfile {
 		)
 	}
 	
-	read(options) {
-		return smartread(Object.assign({}, this.config, options))
+	read(path, options) {
+		return smartread(Object.assign({},
+			this.config,
+			options,
+			(typeof path === 'string')
+				? { path }
+				: (path && Object.keys(path).length > 0)
+					? path
+					: {}
+		))
 	}
 	
-	write(value, options) {
-		return smartwrite(value, Object.assign({}, this.config, options))
+	/**
+	 * writes a value to disk; supports 4 signatures:
+	 *
+	 * .write() //> writes a blank file! be careful
+	 * .write(value)
+	 * .write(value, options)
+	 * .write(path, value, options)
+	 * 
+	 * @param  {String} path    - path (including filename) to write data to; anything goes, like FS.readFile
+	 * @param  {Any} value   - the value to write; IF NOT DEFINED, FILE WILL BE EMPTIED!
+	 * @param  {Hash} options - standard Smartfile options
+	 * @return {undefined} if async:true, returns a Promise that resolves with undefined; otherwise, returns undefined immediately after synchronous write is complete
+	 */
+	write(path, value, options) {
+		let finalPath = (arguments.length === 3) ? path : undefined
+		let finalValue = (arguments.length === 3) ? value : (arguments.length === 0) ? undefined : path
+		let finalOptions = (arguments.length === 3) ? options : (arguments.length === 2) ? value : undefined
+		
+		return smartwrite(finalValue, Object.assign({},
+			this.config,
+			finalOptions,
+			(typeof finalPath === 'string')
+				? { path: finalPath }
+				: (finalPath && Object.keys(finalPath).length > 0)
+					? finalPath
+					: {}
+		))
 	}
 }
 
