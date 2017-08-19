@@ -4,26 +4,13 @@
 		{
 			"path": ".",
 			"folder_exclude_patterns": [
-				"node_modules",
-				"build",
-				"releases"
+				"node_modules"
 			],
 			"file_exclude_patterns": [
 				".DS_Store"
 				, "*.sublime-workspace"
 				, "*.sublime-project"
-				// dev env configuration files; uncomment these lines in a week
-				// , ".eslintrc"
-				// , ".gitignore"
 			]
 		}
-	],
-	"settings":
-	{
-		"ensure_newline_at_eof_on_save": true,
-		"translate_tabs_to_spaces": false,
-		"detect_indentation": false,
-		"trim_trailing_white_space_on_save": false,
-		"default_line_ending": "unix"
-	}
+	]
 }

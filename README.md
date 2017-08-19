@@ -2,9 +2,26 @@
 
 Sugar for managing text files. Especially useful for loading and saving data like user preferences and other reasonably-sized structured data in OS-conventional locations.
 
-### `new Smartfile( path , options )`
-### `data = smartfile.read({ async: false })`
-### `smartfile.write( reduxStore )`
+```javascript
+// set default options at creation time
+new Smartfile(path)
+new Smartfile(options)
+new Smartfile(path, options)
+
+// read data
+file.read()
+file.read(path)
+file.read(options)
+file.read(path, options)
+//=> value
+
+// write data
+file.write() //> writes a blank file! be careful
+file.write(value)
+file.write(value, options)
+file.write(path, value, options)
+//=> undefined
+```
 
 
 ## Table of Contents

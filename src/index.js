@@ -27,12 +27,12 @@ export default class Smartfile {
 			options,
 			(typeof path === 'string')
 				? { path }
-				: (Object.keys(path).length > 0)
+				: (path && Object.keys(path).length > 0)
 					? path
 					: {}
 		)
 	}
-	
+
 	read(path, options) {
 		return smartread(Object.assign({},
 			this.config,
@@ -44,7 +44,7 @@ export default class Smartfile {
 					: {}
 		))
 	}
-	
+
 	/**
 	 * writes a value to disk; supports 4 signatures:
 	 *
@@ -52,7 +52,7 @@ export default class Smartfile {
 	 * .write(value)
 	 * .write(value, options)
 	 * .write(path, value, options)
-	 * 
+	 *
 	 * @param  {String} path    - path (including filename) to write data to; anything goes, like FS.readFile
 	 * @param  {Any} value   - the value to write; IF NOT DEFINED, FILE WILL BE EMPTIED!
 	 * @param  {Hash} options - standard Smartfile options
@@ -62,7 +62,7 @@ export default class Smartfile {
 		let finalPath = (arguments.length === 3) ? path : undefined
 		let finalValue = (arguments.length === 3) ? value : (arguments.length === 0) ? undefined : path
 		let finalOptions = (arguments.length === 3) ? options : (arguments.length === 2) ? value : undefined
-		
+
 		return smartwrite(finalValue, Object.assign({},
 			this.config,
 			finalOptions,
@@ -78,7 +78,7 @@ export default class Smartfile {
 
 function smartread(options) {
 	let { path, json, replacer, reviver, space, ...readFileOpts } = options
-	
+
 	if(options.async) {
 		return readFile(path, readFileOpts)
 		.then(contents => {
@@ -96,19 +96,19 @@ function smartread(options) {
 			throw error
 		})
 	}
-	
+
 	// sync codepath
-	
+
 	let contents
 	try {
 		contents = readFile(path, readFileOpts)
 	} catch(error) {
 		// special handling: return undefined for non-existent files
 		if(error.code === 'ENOENT') return
-		
+
 		throw error
 	}
-	
+
 	try {
 		return (json) ? JSON.parse(contents, reviver) : contents
 	} catch(error) {
@@ -118,7 +118,7 @@ function smartread(options) {
 		if(!contents || !contents.length) return
 		// allow "undefined" as valid file contents; can easily arise from `smartwrite()`
 		if(json && contents === 'undefined') return
-		
+
 		throw error
 	}
 }
@@ -126,12 +126,12 @@ function smartread(options) {
 
 function smartwrite(value, options) {
 	let { path, json, replacer, reviver, space, ...writeFileOpts } = options
-	
+
 	// special handling: when bad value is provided
 	if(json) {
 		// file is json but value cannot be stringified -- throw now or forever hold your peace
 		value = JSON.stringify(value, replacer, space)
-		
+
 	} else {
 		if(typeof value === 'undefined') value = ''
 		else
@@ -139,11 +139,11 @@ function smartwrite(value, options) {
 			if(options.async) return Promise.reject(new Error(`Smartfile.write(value, { json: false }) value must be a string`))
 			throw new Error(`Smartfile.write(value, { json: false }) value must be a string`)
 		}
-	
+
 	}
-	
+
 	// do the work
-	
+
 	if(options.async) {
 		return writeFile(path, value, writeFileOpts)
 		.catch(error => {
@@ -152,12 +152,12 @@ function smartwrite(value, options) {
 				return mkdirp(path, writeFileOpts)
 				.then(() => writeFile(path, value, writeFileOpts))
 			}
-			
+
 			// write failed for some other reason, so throw
 			throw error
 		})
 	}
-	
+
 	// sync codepath
 	try {
 		writeFile(path, value, writeFileOpts)
@@ -168,7 +168,7 @@ function smartwrite(value, options) {
 			writeFile(path, value, writeFileOpts)
 			return
 		}
-		
+
 		throw error
 	}
 }
@@ -177,14 +177,14 @@ function smartwrite(value, options) {
 function mkdirp(path, opts, extantDirs=[]) {
 	let { root:fileRoot , dir , base } = Path.parse(path)
 	let all = dir.split(Path.sep)
-	
+
 	if(all.length === extantDirs.length) {
 		if(opts.async) return Promise.resolve()
 		return
 	}
-	
+
 	let mine = all.slice(0, Math.max(2, extantDirs.length + 1))
-	
+
 	if(opts.async) {
 		return mkdir(mine.join(Path.sep), opts)
 		.catch(error => {
@@ -193,12 +193,12 @@ function mkdirp(path, opts, extantDirs=[]) {
 		})
 		.then(() => mkdirp(path, opts, mine))
 	}
-	
+
 	try {
 		mkdir(mine.join(Path.sep), opts)
 	} catch(error) {
 		if(error.code !== 'EEXIST') throw error
 	}
-	
+
 	return mkdirp(path, opts, mine)
 }
