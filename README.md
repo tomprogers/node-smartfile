@@ -1,213 +1,153 @@
 # smartfile
 
-Sugar for managing text files. Especially useful for loading and saving data like user preferences and other reasonably-sized structured data in OS-conventional locations.
-
-```javascript
-// set default options at creation time
-new Smartfile(path)
-new Smartfile(options)
-new Smartfile(path, options)
-
-// read data
-file.read()
-file.read(path)
-file.read(options)
-file.read(path, options)
-//=> value
-
-// write data
-file.write() //> writes a blank file! be careful
-file.write(value)
-file.write(value, options)
-file.write(path, value, options)
-//=> undefined
-```
-
-
-## Table of Contents
-
-* [Installation](#installation)
-* [Usage](#usage)
-  * [Async](#async)
-  * [Sync](#sync)
-  * [Handling errors](#handling-errors)
-* [API reference](#api-reference)
-* [Caveats](#caveats)
-* [Supported environments](#support)
-
+Ambidextrous sugar for reading and writing text files. Especially useful for loading and saving data like user preferences and other not-enormous data in OS-conventional locations.
 
 ## Installation
 
-* `npm install node-smartfile --save`
-
-* `yarn add node-smartfile`
+- `npm install node-smartfile --save`
 
 
-## Usage
+## Examples
 
-For a more comprehensive API reference that this polyfill supports, refer to
-https://github.github.io/fetch/.
+Attempts to read a file located at `/Users/barney/test.json`.
+
+```js
+import Smartfile from 'node-smartfile'
+
+let file = new Smartfile('/Users/barney/test.json')
+
+file.read()
+.then(data => {
+    // stuff
+})
+```
+
+Attempts to write an object to a file located at `/Users/barney/new_directory/new_file.json`.
+
+```js
+import Smartfile from 'node-smartfile'
+
+let file = new Smartfile('/Users/barney/new_directory/new_file.json')
+
+let data = {
+    some_object: {},
+    a_number: 5
+}
+
+file.write(data)
+```
+
+
+## Documentation
+
+
+### <a id='newsmartfilepathoptions'>`new Smartfile(path, options)`</a>
+
+Configures a new smartfile. No filesystem operations are performed.
+
+Once a smartfile has been configured, it can be read from and written to. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only.
+
+
+### <a id='smartfilereadpathoptions'>`Smartfile.read(path, options)`</a>
+
+Attempts to "smart-read" the contents of a file.
+
+- if the file doesn't exist, returns `undefined`
+- attempts to parse as JSON (unless `options.json = false`)
+- will throw if smartfile configured for JSON but file contents not well-formed
+
+_`path` and `options` are optional._
+
+
+### <a id='smartfilewritepathvalueoptions'>`Smartfile.write(path, value, options)`</a>
+
+Attempts to write `value` to disk at the specified location.
+
+**Warning: `Smartfile.write()` with no arguments will erase the contents of your file.**
+
+- will create directories if necessary
+- can throw permissions-related errors while creating files and directories
+- will throw if smartfile configured for JSON but value cannot be serialized
+
+_`path` and `options` are optional, but `write(path, value)` signature is not supported._
+
+
+### Options
+
+All smartfile calls accept an `options` argument. Smartfile honors the following properties:
+
+- `path`: {String} the path to operate on; this can be overridden just like any other option
+- `async`: {Boolean} whether FS operations should be asynchronous (_default: `true`_); see [Async](#async)
+- `encoding`: {String} file encoding (_default: `'utf8'`_)
+- `json`: {Boolean} whether file contents should be JSON-encoded (_default: `true`_)
+- `replacer`: {Function|Array} passed to `JSON.stringify(value, replacer, space)` when writing, if `options.json` (_default: `null`_)
+- `space`: {Number|String} passed to `JSON.stringify(value, replacer, space)` when writing, if `json` (_default: `null`_)
+- `reviver`: {Function} passed to `JSON.parse(string, reviver)` when reading, if `options.json` (_default: `null`_)
+
+Default options:
+
+```javascript
+{
+    async: true,
+    encoding: 'utf8',
+    json: true,
+    replacer: null,
+    space: null,
+    reviver: null
+}
+```
+
+Any other properties will be passed down to the core nodejs methods, which are:
+
+*  `fs.readFile` & `fs.readFileSync`
+*  `fs.writeFile` & `fs.writeFileSync`
+*  `fs.mkdir` & `fs.mkdirSync`
+*  `fs.access` & `fs.accessSync`
+
 
 ### Async
 
+Smartfile's read and write methods are ambidextrous, meaning that they can be invoked in a blocking or non-blocking style as circumstances require.
+
+By default, `Smartfile.read` & `Smartfile.write` operate asynchronously, and therefore return Promises. However, if `options.async === false`, these methods will block until they can provide their return values. This is useful when e.g. writing data to disk when an Electron app is closing, at which time async file operations are not guaranteed to complete before exit.
+
+_Note: Smartfile creation is always synchronous._
+
+Async can be set at creation time, and temporarily overridden at any call site.
+
 ```javascript
 import Smartfile from 'node-smartfile'
 
+// default configuration is async
 const userPrefs = new Smartfile(`~/Library/Preferences/MyApp/user1.myapp-settings`)
 
-
-function saveUserPrefs(newPrefs=DefaultUserPreferences) {
-    return userPrefs.write(newPrefs) // resolves with undefined
-    //> directories created, file written
-}
-
-function readUserPrefs() {
-    return userPrefs.read() // resolves with the content of the file
-}
-```
-
-### Sync
-
-```javascript
-import Smartfile from 'node-smartfile'
-const userPrefs = new Smartfile(`~/Library/Preferences/MyApp/user2.myapp-settings`, { async: false })
-
-function getPrefByName(name) {
-    let prefs = userPrefs.read()
-    return prefs[name]
-}
-```
-
-
-### Handling errors
-
-Smartfile methods can throw any error thrown by methods in the native node `fs` module, including:
-
-*  `readFile` & `readFileSync`
-*  `writeFile` & `writeFileSync`
-*  `mkdir` & `mkdirSync`
-*  `access` & `accessSync`
-
-Also, when working with `json` files, you may see any of the errors thrown by `JSON.parse` & `JSON.stringify`:
-
-* `unexpected token %t at position %p` (file contents not valid as JSON)
-* stringification failure for objects with circular references
-
-However, Smartfile's "smartness" lies in the fact that it swallows and provides default handling for a few error scenarios:
-
-* `ENOENT` (when attempting to read a path that doesn't exist)
-  ignores the error, returns `undefined`
-* `EEXIST` (when attempting to create a directory that already exists)
-  ignores the error, moves on to create nested directory or write file
-
-
-## API reference
-
-```javascript
-// initialize a smartfile
-let file = new Smartfile(path)
-let file = new Smartfile(options)
-let file = new Smartfile(path, options)
-let file = new Smartfile(path, options, initialContent)
-
-// all the options
-let file = new Smartfile({
-    path: String // required; may be relative or absolute
-    
-    // whether FS operations should be asynchronous
-    async: Boolean, // default: true
-    
-    // Smartfile overrides some underlying methods by default
-    encoding: String, // default: 'utf8'
-    
-    // read & write will marshall to and from JSON automatically
-    json: Boolean, // default: true
-    
-    // JSON.stringify(value, replacer, space)
-    replacer: Function(key, value) | Array // default: null
-    space: Number | String // default: null
-    
-    // JSON.parse(string, reviver)
-    reviver: Function(key, value) // default: null
-    
-    // any other properties are passed down to core nodejs methods
-    ...opts
+// read and write prefs asynchronously
+let prefUpdatePromise = userPrefs.read()
+.then(prefData => {
+    let newPrefs = Object.assign({}, prefData, { updated: true })
+    return userPrefs.write(newPrefs)
 })
-```
 
-**Every option can be overriden at any call site.**
-
-```javascript
-// e.g. create an async smartfile, then switch to synchronous use
-let file = new Smartfile(path) // default async:true
-
-file.write({initial_value:true}) // async write
-.then(() => {
-    // switch to synchronous use
-    let content = file.read({ async:false }) //=> '{"initial_value":true}'
-    
-    // overrides at .read and .write don't become permanent
-    // must continue to specify async:false
-    file.write({initial_value:false}, { async: false })
-    
-    // these both produce the same results
-    return file.read() // returns promise that becomes resolution value of write.then
-    return file.read({async:false}) // blocks for read, then returns JSON object, which becomes resolution value of write.then
-})
-//=> resolves with {"initial_value":false}
-```
-
-```javascript
-// define options for a standard file format, then read and write several files in that format
-
-let pets = {
-    'Fluffy': { species: 'cat' , ageInYears: 8 },
-    'Puffy': { species: 'dog', ageInYears: 10 },
-    'Gruffy': { species: 'cat', ageInYears: 14 }
-}
-
-let petfile = new Smartfile({ json: false })
-
-Object.keys(pets).forEach(petName => {
-    let petData = pet2customDataFormat(pets[petName])
-    // even path can be overriden
-    petfile.write(petData, {path:`./data/pets-by-name/${petName}.pet`})
-})
-```
-
-Reading and writing are trivial.
-
-```javascript
-
-// read data
-file.read()
-file.read(path)
-file.read(options)
-file.read(path, options)
-//=> value
-
-// write data
-file.write() //> writes a blank file! be careful
-file.write(value)
-file.write(value, options)
-file.write(path, value, options)
-//=> undefined
+// read and write prefs synchronously
+let prefData = userPrefs.read({ async: false })
+let newPrefs = Object.assign({}, prefData, { updated: true })
+userPrefs.write(newPrefs, { async: false })
 ```
 
 
 ## Caveats
 
-Has not (yet) been tested on Windows, or against an NTFS filesystem. I tried to be OS-agnostic, but something may have slipped through.
+- Has not (yet) been tested on Windows, or against an NTFS filesystem. I tried to be OS-agnostic, but something may have slipped through.
 
 
-## Support
+## Supported Platforms
 
 - node
 - Electron
-- ~~react-native~~
+- ~~react-native~~ (untested, but should work)
 
 # License
 
-Copyright © 2017 Tom Rogers  <tom@roguevendor.com>
+Copyright © 2017 Tom Rogers <tom@roguevendor.com>
 
 This work is mine. You can't do anything with it yet. Once I declare it finished, I may grant you some rights.
