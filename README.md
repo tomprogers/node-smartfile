@@ -1,88 +1,92 @@
-# smartfile
+# easytextfile
 
 Ambidextrous sugar for reading and writing text files. Especially useful for loading and saving data like user preferences and other not-enormous data in OS-conventional locations.
 
 ## Installation
 
-- `npm install node-smartfile --save`
+1. `npm install --save node-easytextfile`
 
 
 ## Examples
 
-Attempts to read a file located at `/Users/barney/test.json`.
+### Attempts to read a file located at `/Users/barney/myFile.json`:
 
-```js
-import Smartfile from 'node-smartfile'
+```javascript
+var Textfile = require('node-easytextfile');
 
-let file = new Smartfile('/Users/barney/test.json')
-
-file.read()
-.then(data => {
+Textfile.read('/Users/barney/myFile.json')
+.then(function(data) {
     // stuff
-})
+});
 ```
 
-Attempts to write an object to a file located at `/Users/barney/new_directory/new_file.json`.
+### Attempts to store an object as a file located at `/Users/barney/someObject.json`:
 
-```js
-import Smartfile from 'node-smartfile'
+```javascript
+var Textfile = require('node-easytextfile');
 
-let file = new Smartfile('/Users/barney/new_directory/new_file.json')
+var data = {
+    letters: ['a','b','c'],
+    number: 5
+};
 
-let data = {
-    some_object: {},
-    a_number: 5
-}
-
-file.write(data)
+Textfile.write('/Users/barney/someObject.json', data)
+.then(function() {
+    // it's done
+});
 ```
 
 
 ## Documentation
 
 
-### <a id='newsmartfilepathoptions'>`new Smartfile(path, options)`</a>
+### <a id='newtextfilepathoptions'>`new Textfile(path, options)`</a>
 
-Configures a new smartfile. No filesystem operations are performed.
+Configures a new easytextfile. Does not perform any filesystem operations.
 
-Once a smartfile has been configured, it can be read from and written to. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only.
+Once an easytextfile has been configured, it can be read from and written to. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only.
 
 
-### <a id='smartfilereadpathoptions'>`Smartfile.read(path, options)`</a>
+### <a id='textfilereadpathoptions'>`Textfile.read(path, options)`</a>
 
-Attempts to "smart-read" the contents of a file.
+Attempts to read the contents of a file:
 
 - if the file doesn't exist, returns `undefined`
 - attempts to parse as JSON (unless `options.json = false`)
-- will throw if smartfile configured for JSON but file contents not well-formed
+- will throw if easytextfile configured for JSON but file contents not well-formed
 
 _`path` and `options` are optional._
 
 
-### <a id='smartfilewritepathvalueoptions'>`Smartfile.write(path, value, options)`</a>
+### <a id='textfilewritepathvalueoptions'>`Textfile.write(path, value, options)`</a>
 
-Attempts to write `value` to disk at the specified location.
-
-**Warning: `Smartfile.write()` with no arguments will erase the contents of your file.**
+Attempts to write `value` to disk at the easytextfile's location:
 
 - will create directories if necessary
 - can throw permissions-related errors while creating files and directories
-- will throw if smartfile configured for JSON but value cannot be serialized
+- will throw if easytextfile configured for JSON but value cannot be serialized
 
 _`path` and `options` are optional, but `write(path, value)` signature is not supported._
 
+**Warning: `Textfile.write()` with no arguments will erase the contents of your file.**
 
-### Options
+- `Textfile.write(path, undefined, { json: true })` will write the word `undefined` to the file, which this library will re-interpret as `undefined` upon read, but which other libraries are likely to reject, as `JSON.parse("undefined")` throws.
 
-All smartfile calls accept an `options` argument. Smartfile honors the following properties:
 
-- `path`: {String} the path to operate on; this can be overridden just like any other option
-- `async`: {Boolean} whether FS operations should be asynchronous (_default: `true`_); see [Async](#async)
-- `encoding`: {String} file encoding (_default: `'utf8'`_)
-- `json`: {Boolean} whether file contents should be JSON-encoded (_default: `true`_)
-- `replacer`: {Function|Array} passed to `JSON.stringify(value, replacer, space)` when writing, if `options.json` (_default: `null`_)
-- `space`: {Number|String} passed to `JSON.stringify(value, replacer, space)` when writing, if `json` (_default: `null`_)
-- `reviver`: {Function} passed to `JSON.parse(string, reviver)` when reading, if `options.json` (_default: `null`_)
+### <a id='options'>`options`</a>
+
+All easytextfile calls accept an `options` argument. Easytextfile honors the following properties:
+
+| Name | Type | Default | Description |
+| ---: | :--- | :---: | :--- |
+|     `path` | String            | _required_   | the path to operate on; this can be set and overridden just like any other option |
+|    `async` | Boolean           | `true`       | whether filesystem operations should be asynchronous; see [Async](#async) |
+| `encoding` | String            | `'utf8'`     | file encoding |
+|     `json` | Boolean           | `true`       | whether file contents should be JSON-encoded |
+| `replacer` | Function or Array | `null`       | if `options.json`, passed to `JSON.stringify(value, replacer, space)` when writing |
+|    `space` | Number or String  | `null`       | if `options.json`, passed to `JSON.stringify(value, replacer, space)` when writing |
+|  `reviver` | Function          | `null`       | if `options.json`, passed to `JSON.parse(string, reviver)` when reading |
+
 
 Default options:
 
@@ -107,44 +111,92 @@ Any other properties will be passed down to the core nodejs methods, which are:
 
 ### Async
 
-Smartfile's read and write methods are ambidextrous, meaning that they can be invoked in a blocking or non-blocking style as circumstances require.
+Easytextfile's read and write methods are ambidextrous, meaning that they can be invoked in a blocking or non-blocking style as circumstances require.
 
-By default, `Smartfile.read` & `Smartfile.write` operate asynchronously, and therefore return Promises. However, if `options.async === false`, these methods will block until they can provide their return values. This is useful when e.g. writing data to disk when an Electron app is closing, at which time async file operations are not guaranteed to complete before exit.
+By default, `Textfile.read` & `Textfile.write` operate asynchronously, and therefore return promises. However, if `options.async = false`, these methods will block until they can provide their return values. This is useful when e.g. writing data to disk when an Electron app is closing, under which circumstances async file operations are not guaranteed to complete before exit.
 
-_Note: Smartfile creation is always synchronous._
+_Note: Easytextfile creation is always synchronous._
 
-Async can be set at creation time, and temporarily overridden at any call site.
+`async` can be set at creation time, and temporarily overridden at any call site.
 
 ```javascript
-import Smartfile from 'node-smartfile'
+var Textfile = require('node-easytextfile');
 
 // default configuration is async
-const userPrefs = new Smartfile(`~/Library/Preferences/MyApp/user1.myapp-settings`)
+var userPrefs = new Textfile(`~/Library/Preferences/MyApp/user1.myapp-settings`);
 
 // read and write prefs asynchronously
-let prefUpdatePromise = userPrefs.read()
-.then(prefData => {
-    let newPrefs = Object.assign({}, prefData, { updated: true })
-    return userPrefs.write(newPrefs)
-})
+var prefUpdatePromise = userPrefs.read()
+.then(function(prefData) {
+    var newPrefs = Object.assign({}, prefData, { updated: true });
+    return userPrefs.write(newPrefs);
+});
 
 // read and write prefs synchronously
-let prefData = userPrefs.read({ async: false })
-let newPrefs = Object.assign({}, prefData, { updated: true })
-userPrefs.write(newPrefs, { async: false })
+var prefData = userPrefs.read({ async: false });
+var newPrefs = Object.assign({}, prefData, { updated: true });
+userPrefs.write(newPrefs, { async: false });
+```
+
+
+### Static & instance-based invocation supported
+
+
+#### Static invocation
+
+You can read and write without creating objects.
+
+E.g.: write some data to disk and be done:
+
+```javascript
+var Textfile = require('node-easytextfile');
+
+function saveManifest(manifest) {
+    return Textfile.write('/Users/barney/.myapp/MANIFEST', manifest, { async: false });
+}
+```
+
+
+#### Instance-based invocation
+
+If you create an instance using `new`, its initial options will persist for its lifetime, allowing you to re-use the same configuration for working with one or more files.
+
+E.g.: define a "driver" for working with custom data formats:
+
+```javascript
+var Textfile = require('node-easytextfile');
+var personReviver = require('thirdparty-dataformat-thing').reviver;
+var personReplacer = require('thirdparty-dataformat-thing').replacer;
+
+var PersonFile = new Textfile({
+    json: true,
+    reviver: personReviver,
+    replacer: personReplacer
+});
+
+function readPersonFile(filingName) {
+    var filename = rootDir + '/' + filingName + '.person';
+    return PersonFile.read(filename);
+}
+
+function writePersonFile(person) {
+    var filename = rootDir + '/' + person.filingName + '.person';
+    return PersonFile.write(filename, person);
+}
 ```
 
 
 ## Caveats
 
 - Has not (yet) been tested on Windows, or against an NTFS filesystem. I tried to be OS-agnostic, but something may have slipped through.
+- Has not been tested on react-native, but it might work.
 
 
 ## Supported Platforms
 
 - node
 - Electron
-- ~~react-native~~ (untested, but should work)
+- ~~react-native~~
 
 # License
 
