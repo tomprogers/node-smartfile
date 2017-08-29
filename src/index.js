@@ -5,7 +5,7 @@ import {
 	mkdir,
 	access,
 	exists
-} from './smartfile-fs'
+} from './ambi-fs'
 
 const DefaultOptions = {
 	async: true,      // Textfile default

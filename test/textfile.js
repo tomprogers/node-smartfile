@@ -10,10 +10,10 @@ import { constants } from 'fs'
 import mockfs from 'mock-fs'
 import FS from 'fs'
 import Process from 'process'
-import Smartfile from '../src'
+import Textfile from '../src'
 
 
-describe(`Smartfile`, function() {
+describe(`Textfile`, function() {
 
 	////////////////
 	// READ TESTS //
@@ -23,17 +23,17 @@ describe(`Smartfile`, function() {
 
 		before(function() {
 			mockfs({
-				'/Users/testman/SMARTFILE/test/dir/file.blank': '',
-				'/Users/testman/SMARTFILE/test/dir/file.txt': 'hello',
-				'/Users/testman/SMARTFILE/test/dir/file-undef.json': 'undefined',
-				'/Users/testman/SMARTFILE/test/dir/file-false.json': 'false',
-				'/Users/testman/SMARTFILE/test/dir/file.json-bad': '{"is_broken:true',
-				'/Users/testman/SMARTFILE/test/dir/file.json': '{"it_reads":true}'
+				'/Users/testman/TEXTFILE/test/dir/file.blank': '',
+				'/Users/testman/TEXTFILE/test/dir/file.txt': 'hello',
+				'/Users/testman/TEXTFILE/test/dir/file-undef.json': 'undefined',
+				'/Users/testman/TEXTFILE/test/dir/file-false.json': 'false',
+				'/Users/testman/TEXTFILE/test/dir/file.json-bad': '{"is_broken:true',
+				'/Users/testman/TEXTFILE/test/dir/file.json': '{"it_reads":true}'
 			})
 		})
 
 		it(`!exists(dir) //> undefined`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/fiction/dir/file.fiction')
+			let sf = new Textfile('/Users/testman/TEXTFILE/fiction/dir/file.fiction')
 
 			return assert.eventually.equal(
 				sf.read(),
@@ -43,7 +43,7 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`!exists(file) //> undefined`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.fiction')
+			let sf = new Textfile('/Users/testman/TEXTFILE/test/dir/file.fiction')
 
 			return assert.eventually.equal(
 				sf.read(),
@@ -53,8 +53,8 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`0 bytes //> undefined | ''`, function() {
-			let sf1 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.blank')
-			let sf2 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.blank', { json: false })
+			let sf1 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.blank')
+			let sf2 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.blank', { json: false })
 
 			return Promise.all([
 				assert.eventually.equal(
@@ -71,10 +71,10 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`!json //> text`, function() {
-			let sf1 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.json', { json: false })
-			let sf2 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file-undef.json', { json: false })
-			let sf3 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file-false.json', { json: false })
-			let sf4 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.json-bad', { json: false })
+			let sf1 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.json', { json: false })
+			let sf2 = new Textfile('/Users/testman/TEXTFILE/test/dir/file-undef.json', { json: false })
+			let sf3 = new Textfile('/Users/testman/TEXTFILE/test/dir/file-false.json', { json: false })
+			let sf4 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.json-bad', { json: false })
 
 			return Promise.all([
 				assert.eventually.equal(
@@ -101,10 +101,10 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`json //> undefined | scalar | object | Error`, function() {
-			let sf1 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.json')
-			let sf2 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file-undef.json')
-			let sf3 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file-false.json')
-			let sf4 = new Smartfile('/Users/testman/SMARTFILE/test/dir/file.json-bad')
+			let sf1 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.json')
+			let sf2 = new Textfile('/Users/testman/TEXTFILE/test/dir/file-undef.json')
+			let sf3 = new Textfile('/Users/testman/TEXTFILE/test/dir/file-false.json')
+			let sf4 = new Textfile('/Users/testman/TEXTFILE/test/dir/file.json-bad')
 
 			return Promise.all([
 				assert.eventually.deepEqual(
@@ -139,29 +139,29 @@ describe(`Smartfile`, function() {
 
 		before(function() {
 			mockfs({
-				'/Users/testman/SMARTFILE/': {
+				'/Users/testman/TEXTFILE/': {
 					'blank.json': ''
 				}
 			})
 		})
 
 		it(`writes json`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/blank.json')
+			let sf = new Textfile('/Users/testman/TEXTFILE/blank.json')
 
 			return sf.write( {it_writes:true} )
 			.then(() => {
-				let writtenValue = FS.readFileSync('/Users/testman/SMARTFILE/blank.json', { encoding: 'utf8' })
+				let writtenValue = FS.readFileSync('/Users/testman/TEXTFILE/blank.json', { encoding: 'utf8' })
 				assert.equal(writtenValue, '{"it_writes":true}', `writes standard JSON correctly`)
 			})
 		})
 
 		it(`writes plain text`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/blank.txt', { json: false })
+			let sf = new Textfile('/Users/testman/TEXTFILE/blank.txt', { json: false })
 
 			return sf.write( 'it_writes = true' )
 			.then(() => {
 				assert.equal(
-					FS.readFileSync('/Users/testman/SMARTFILE/blank.txt', { encoding: 'utf8' }),
+					FS.readFileSync('/Users/testman/TEXTFILE/blank.txt', { encoding: 'utf8' }),
 					'it_writes = true',
 					`writes text correctly`
 				)
@@ -169,7 +169,7 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`throws instead of writing an object to text file`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/blank.txt', { json: false })
+			let sf = new Textfile('/Users/testman/TEXTFILE/blank.txt', { json: false })
 
 			assert.eventually.throws(
 				sf.write( {throws_when_object_for_text:true} )
@@ -210,7 +210,7 @@ describe(`Smartfile`, function() {
 		*/
 
 		it(`throws if json data unserializable`, function() {
-			let sf = new Smartfile('/Users/testman/SMARTFILE/blank.json')
+			let sf = new Textfile('/Users/testman/TEXTFILE/blank.json')
 
 			let objectA = { name: 'A' }, objectB = { name: 'B' }
 			objectA.link = objectB
@@ -223,14 +223,14 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`creates the file if necessary`, function() {
-			let path = '/Users/testman/SMARTFILE/nonexistent.json'
+			let path = '/Users/testman/TEXTFILE/nonexistent.json'
 
 			assert.throws(
 				() => FS.accessSync(path),
-				Error, `ENOENT, no such file or directory '/Users/testman/SMARTFILE/nonexistent.json'`
+				Error, `ENOENT, no such file or directory '/Users/testman/TEXTFILE/nonexistent.json'`
 			)
 
-			let sf = new Smartfile(path)
+			let sf = new Textfile(path)
 			sf.write({it_creates_files:true}, { async: false })
 
 			assert.equal(
@@ -240,7 +240,7 @@ describe(`Smartfile`, function() {
 		})
 
 		it(`creates directories if necessary`, function() {
-			let dir = '/Users/testman/SMARTFILE/nonexistent-dir'
+			let dir = '/Users/testman/TEXTFILE/nonexistent-dir'
 			let path = dir + '/nonexistent.file'
 
 			assert.throws(
@@ -248,7 +248,7 @@ describe(`Smartfile`, function() {
 				Error, `ENOENT, no such file or directory '${dir}'`
 			)
 
-			let sf = new Smartfile(path, { async: false })
+			let sf = new Textfile(path, { async: false })
 			sf.write({it_creates_dirs:true})
 
 			assert.doesNotThrow(
@@ -263,17 +263,17 @@ describe(`Smartfile`, function() {
 					uid: process.getuid(),
 					mode: 700,
 					items: {
-						'SMARTFILE/file.json': '{"I_am":true}'
+						'TEXTFILE/file.json': '{"I_am":true}'
 					}
 				})
 			})
 
 			assert.throws(
-				() => FS.accessSync('/Users/otheruser/SMARTFILE/file.json'),
+				() => FS.accessSync('/Users/otheruser/TEXTFILE/file.json'),
 				Error, 'EACCES, permission denied'
 			)
 
-			let sf = new Smartfile('/Users/otheruser/SMARTFILE/file.json')
+			let sf = new Textfile('/Users/otheruser/TEXTFILE/file.json')
 
 			assert.eventually.throws(
 				sf.write({i_am_forbidden:true}, {})
@@ -282,10 +282,10 @@ describe(`Smartfile`, function() {
 
 		it(`returns undefined on success`, function() {
 			mockfs({
-				'/Users/testman/SMARTFILE': {}
+				'/Users/testman/TEXTFILE': {}
 			})
 
-			let sf = new Smartfile('/Users/testman/SMARTFILE/bools.json')
+			let sf = new Textfile('/Users/testman/TEXTFILE/bools.json')
 
 			return sf.write({ truthy: true, falsey: false })
 			.then(val => {

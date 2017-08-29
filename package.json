@@ -1,12 +1,12 @@
 {
-  "name": "node-smartfile",
-  "version": "0.9.0",
-  "description": "Library for conveniently reading & writing text files.",
+  "name": "eztxt4fs",
+  "version": "1.0.0",
+  "description": "Ambidextrous sugar for reading and writing text files via the fs module.",
   "license": "UNLICENSED",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/tomprogers/node-smartfile.git"
+    "url": "https://github.com/tomprogers/eztxt4fs.git"
   },
   "author": {
     "name": "Tom Rogers",
@@ -22,12 +22,24 @@
   "keywords": [
     "electron",
     "es6",
+    "fs",
+    "async",
     "file",
+    "text",
     "json",
     "mkdir",
     "node",
     "read",
-    "write"
+    "write",
+    "react-native",
+    "access",
+    "accessSync",
+    "mkdir",
+    "mkdirSync",
+    "readFile",
+    "readFileSync",
+    "writeFile",
+    "writeFileSync"
   ],
   "engines": {
     "node": ">=5"
