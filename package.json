@@ -1,7 +1,7 @@
 {
   "name": "eztxt4fs",
-  "version": "1.0.0",
-  "description": "Ambidextrous sugar for reading and writing text files via the fs module.",
+  "version": "1.0.1",
+  "description": "Sync/async sugar for reading and writing text files via the fs module.",
   "license": "MIT",
   "private": false,
   "repository": {
@@ -21,8 +21,6 @@
   },
   "main": "lib/index.js",
   "keywords": [
-    "access",
-    "accessSync",
     "async",
     "electron",
     "es6",
