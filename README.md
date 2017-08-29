@@ -40,13 +40,6 @@ Textfile.write('/Users/barney/someObject.json', data)
 ## Documentation
 
 
-### <a id='newtextfilepathoptions'>`new Textfile( path `_`[, options]`_` )`</a>
-
-Returns a new, configured `Textfile`. Does not perform any filesystem operations.
-
-Once a `Textfile` has been configured, it can be read from and written to as described below, but without having to supply `path` or `options` again. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only. `path` cannot be changed after creation.
-
-
 ### <a id='textfilereadpathoptions'>`Textfile.read( path `_`[, options]`_` )`</a>
 
 Attempts to read the contents of a file:
@@ -55,7 +48,9 @@ Attempts to read the contents of a file:
 - attempts to parse as JSON (unless `options.json = false`)
 - will throw if Textfile configured for JSON but file contents not well-formed
 
-_When calling `.read()` on an instance, do not supply `path`._
+When calling `.read()` on an instance, do not supply `path`:
+
+- `instance.read( `_`[options]`_` )`
 
 
 ### <a id='textfilewritepathvalueoptions'>`Textfile.write( path `_`[, value [, options]]`_` )`</a>
@@ -64,17 +59,26 @@ Attempts to write `value` to disk at the specified path.
 
 - will create directories if necessary
 - can throw permissions-related errors while creating files and directories
-- will throw if Textfile configured for JSON but value cannot be serialized
+- will throw if `Textfile` configured for JSON but value cannot be serialized
 
-_When calling `.write()` on an instance, do not supply `path`._
+When calling `.write()` on an instance, do not supply `path`:
+
+- `instance.write( `_`[value [, options]]`_` )`
 
 **Warning: `Textfile.write()` with no arguments will erase the contents of your file, regardless of configuration.**
 
-- Writing `undefined` to a JSON-configured file will write the word `undefined` to the file, which this library will re-interpret as `undefined` upon read, but which other libraries are likely to reject, as `JSON.parse("undefined")` throws in a vanilla JS environment.
+- Writing `undefined` to a JSON-configured file will write the word `undefined` to the file, which this library will re-interpret as `undefined` upon read, but which other libraries are likely to reject, because `JSON.parse("undefined")` throws in a vanilla JS environment.
 
-**TODO: change so that writing `undefined` as JSON will delete the file**
+**Note:** this behavior will be better-defined soon. Expect the current behavior to change.
 
-**TODO: allow disabling deletion behavior with an option**
+
+### <a id='newtextfilepathoptions'>`new Textfile( path `_`[, options]`_` )`</a>
+
+Returns a new, configured `Textfile`. Does not perform any filesystem operations.
+
+Once a `Textfile` has been configured, it can be read from and written to as described above. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only.
+
+`path` cannot be changed after creation.
 
 
 ### <a id='options'>`options`</a>
@@ -83,42 +87,30 @@ All Textfile calls accept an `options` argument. The following properties and va
 
 | Name | Type | Default | Description |
 | ---: | :--- | :---: | :--- |
-|    `async` | Boolean           | `true`       | whether filesystem operations should be asynchronous; see [Async](#Async) |
+|    `async` | Boolean           | `true`       | whether filesystem operations should be asynchronous; see [Async](#async) |
 | `encoding` | String            | `'utf8'`     | file encoding |
 |     `json` | Boolean           | `true`       | whether file contents should be JSON-encoded |
 | `replacer` | Function or Array | `null`       | if `options.json`, passed to `JSON.stringify(value, replacer, space)` when writing |
 |    `space` | Number or String  | `null`       | if `options.json`, passed to `JSON.stringify(value, replacer, space)` when writing |
 |  `reviver` | Function          | `null`       | if `options.json`, passed to `JSON.parse(string, reviver)` when reading |
 
+Any additional properties will be passed down to the core nodejs methods, thus:
 
-Default options:
-
-```javascript
-{
-    async: true,
-    encoding: 'utf8',
-    json: true,
-    replacer: null,
-    space: null,
-    reviver: null
-}
-```
-
-Any additional properties will be passed down to the core nodejs methods, which are:
-
-*  `fs.readFile` & `fs.readFileSync`
-*  `fs.writeFile` & `fs.writeFileSync`
-*  `fs.mkdir` & `fs.mkdirSync`
-*  `fs.access` & `fs.accessSync`
+* `FS.readFile(path, additionalProperties, callback)`
+* `FS.readFileSync(path, additionalProperties)`
+* `FS.writeFile(path, string, additionalProperties, callback)`
+* `FS.writeFileSync(path, string, additionalProperties)`
+* `FS.mkdir(path, additionalProperties, callback)`
+* `FS.mkdirSync(path, additionalProperties)`
 
 
 ### Async
 
 Textfile's read and write methods are ambidextrous, meaning that they can be invoked in a blocking or non-blocking style as circumstances require.
 
-By default, `Textfile.read()` & `Textfile.write()` operate asynchronously, and therefore return promises. However, if `options.async = false`, these methods will block until they can provide their return values. This is useful when e.g. writing data to disk when an Electron app is closing, under which circumstances async file operations are not guaranteed to complete before exit.
+By default, `Textfile.read()` & `Textfile.write()` operate asynchronously, and therefore return promises. However, if `options.async = false`, these methods will block until they can provide their return values. This is useful for e.g. writing data to disk when an Electron app is closing, under which circumstances async file operations are not guaranteed to complete before exit.
 
-_Note: Textfile creation is always synchronous._
+**Note:** Textfile creation is always synchronous.
 
 `async` can be set at creation time, and temporarily overridden at any call site.
 
@@ -135,7 +127,7 @@ var prefUpdatePromise = userPrefs.read()
     return userPrefs.write(newPrefs);
 });
 
-// read and write prefs synchronously
+// read and write same prefs synchronously
 var prefData = userPrefs.read({ async: false });
 var newPrefs = Object.assign({}, prefData, { updated: true });
 userPrefs.write(newPrefs, { async: false });
@@ -144,32 +136,24 @@ userPrefs.write(newPrefs, { async: false });
 
 ### Static & instance-based invocation supported
 
-
-#### Static invocation
-
-You can read and write files without creating objects.
-
-E.g.: write some data to disk and be done:
+You can read and write files without creating objects:
 
 ```javascript
 var Textfile = require('eztxt4fs');
 
-function readPersonFile(filing_name) {
+function readPersonFile(filingName) {
     var filename = filingName + '.person';
     return Textfile.read(filename);
 }
 
 function writePersonFile(person) {
-    var filename = filingName + '.person';
+    var filename = person.filing_name + '.person';
     return Textfile.write(filename, person);
 }
 
 ```
 
-
-#### Instance-based invocation
-
-If you create an instance using `new`, its initial options will persist for its lifetime, allowing you to operate on the same file more succinctly.
+Instances created with `new` preserve their original path and options, allowing for succinct reads and writes.
 
 ```javascript
 var Textfile = require('eztxt4fs');
@@ -200,10 +184,3 @@ function setPrefs(newPrefs) {
 - Has not been tested against an NTFS filesystem.
 
 I think `eztxt4fs` will work as advertised in all of these cases, but haven't tested them yet. If you find out, please post an issue with your results.
-
-
-## License
-
-Copyright © 2017 Tom Rogers <tom@roguevendor.com>
-
-This work is mine. You can't do anything with it yet. Once I declare it finished, I may grant you some rights.
