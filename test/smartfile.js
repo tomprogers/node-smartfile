@@ -230,8 +230,8 @@ describe(`Smartfile`, function() {
 				Error, `ENOENT, no such file or directory '/Users/testman/SMARTFILE/nonexistent.json'`
 			)
 
-			let sf = new Smartfile()
-			sf.write(path, {it_creates_files:true}, { async: false })
+			let sf = new Smartfile(path)
+			sf.write({it_creates_files:true}, { async: false })
 
 			assert.equal(
 				FS.readFileSync(path, { encoding: 'utf8' }),
@@ -248,8 +248,8 @@ describe(`Smartfile`, function() {
 				Error, `ENOENT, no such file or directory '${dir}'`
 			)
 
-			let sf = new Smartfile({ async: false })
-			sf.write(path, {it_creates_dirs:true}, {})
+			let sf = new Smartfile(path, { async: false })
+			sf.write({it_creates_dirs:true})
 
 			assert.doesNotThrow(
 				() => FS.accessSync(dir),
@@ -273,10 +273,10 @@ describe(`Smartfile`, function() {
 				Error, 'EACCES, permission denied'
 			)
 
-			let sf = new Smartfile()
+			let sf = new Smartfile('/Users/otheruser/SMARTFILE/file.json')
 
 			assert.eventually.throws(
-				sf.write('/Users/otheruser/SMARTFILE/file.json', {i_am_forbidden:true}, {})
+				sf.write({i_am_forbidden:true}, {})
 			)
 		})
 

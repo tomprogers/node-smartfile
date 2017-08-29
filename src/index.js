@@ -8,76 +8,59 @@ import {
 } from './smartfile-fs'
 
 const DefaultOptions = {
-	async: true,      // Smartfile default
-	encoding: 'utf8', // Smartfile default
-	json: true,       // Smartfile default
+	async: true,      // Textfile default
+	encoding: 'utf8', // Textfile default
+	json: true,       // Textfile default
 	replacer: null,   // JSON.stringify default
 	reviver: null,    // JSON.parse default
 	space: null       // JSON.stringify default
 }
 
 
-export default class Smartfile {
+export default class Textfile {
 	constructor(path, options) {
-		// if arg is a string, treat it as .path and merge with defaults
-		// if arg is hash, merge it with defaults
-		// otherwise, ignore it
-		this.config = Object.assign({},
-			DefaultOptions,
-			options,
-			(typeof path === 'string')
-				? { path }
-				: (path && Object.keys(path).length > 0)
-					? path
-					: {}
+		if(!path) throw new Error('invalid path')
+
+		this.path = path
+
+		// bake config from options
+		this.config = Object.assign({}, DefaultOptions, options)
+	}
+
+
+	read(path, options) {
+		// enforce: instance.read() does not support path arg
+		if(this.path && this.config) {
+			options = path
+			path = this.path
+		}
+
+		return smartread(
+			path,
+			Object.assign({}, this.config, options)
 		)
 	}
 
-	read(path, options) {
-		return smartread(Object.assign({},
-			this.config,
-			options,
-			(typeof path === 'string')
-				? { path }
-				: (path && Object.keys(path).length > 0)
-					? path
-					: {}
-		))
-	}
 
-	/**
-	 * writes a value to disk; supports 4 signatures:
-	 *
-	 * .write() //> writes a blank file! be careful
-	 * .write(value)
-	 * .write(value, options)
-	 * .write(path, value, options)
-	 *
-	 * @param  {String} path    - path (including filename) to write data to; anything goes, like FS.readFile
-	 * @param  {Any} value   - the value to write; IF NOT DEFINED, FILE WILL BE EMPTIED!
-	 * @param  {Hash} options - standard Smartfile options
-	 * @return {undefined} if async:true, returns a Promise that resolves with undefined; otherwise, returns undefined immediately after synchronous write is complete
-	 */
 	write(path, value, options) {
-		let finalPath = (arguments.length === 3) ? path : undefined
-		let finalValue = (arguments.length === 3) ? value : (arguments.length === 0) ? undefined : path
-		let finalOptions = (arguments.length === 3) ? options : (arguments.length === 2) ? value : undefined
+		// enforce: instance.write() does not support path arg
+		if(this.path && this.config) {
+			options = value
+			value = path
+			path = this.path
+		}
 
-		return smartwrite(finalValue, Object.assign({},
-			this.config,
-			finalOptions,
-			(typeof finalPath === 'string')
-				? { path: finalPath }
-				: (finalPath && Object.keys(finalPath).length > 0)
-					? finalPath
-					: {}
-		))
+		return smartwrite(
+			path,
+			value,
+			Object.assign({}, this.config, options)
+		)
 	}
 }
 
 
-function smartread(options) {
-	let { path, json, replacer, reviver, space, ...readFileOpts } = options
+function smartread(path, options) {
+	let { json, replacer, reviver, space, ...readFileOpts } = options
 
 	if(options.async) {
 		return readFile(path, readFileOpts)
@@ -124,8 +107,8 @@ function smartread(options) {
 }
 
 
-function smartwrite(value, options) {
-	let { path, json, replacer, reviver, space, ...writeFileOpts } = options
+function smartwrite(path, value, options) {
+	let { json, replacer, reviver, space, ...writeFileOpts } = options
 
 	// special handling: when bad value is provided
 	if(json) {
@@ -136,8 +119,8 @@ function smartwrite(value, options) {
 		if(typeof value === 'undefined') value = ''
 		else
 		if(typeof value !== 'string') {
-			if(options.async) return Promise.reject(new Error(`Smartfile.write(value, { json: false }) value must be a string`))
-			throw new Error(`Smartfile.write(value, { json: false }) value must be a string`)
+			if(options.async) return Promise.reject(new Error(`Textfile.write(value, { json: false }) value must be a string`))
+			throw new Error(`Textfile.write(value, { json: false }) value must be a string`)
 		}
 
 	}
