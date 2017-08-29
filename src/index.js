@@ -2,9 +2,7 @@ import Path from 'path'
 import {
 	readFile,
 	writeFile,
-	mkdir,
-	access,
-	exists
+	mkdir
 } from './ambi-fs'
 
 const DefaultOptions = {
