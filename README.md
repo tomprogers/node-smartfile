@@ -42,11 +42,9 @@ Textfile.write('/Users/barney/someObject.json', data)
 
 ### <a id='newtextfilepathoptions'>`new Textfile( path `_`[, options]`_` )`</a>
 
-Returns a new `Textfile`. Does not perform any filesystem operations.
+Returns a new, configured `Textfile`. Does not perform any filesystem operations.
 
-Once a `Textfile` has been configured, it can be read from and written to as described below, but without having to supply `path` or `options` again.
-
-The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only.
+Once a `Textfile` has been configured, it can be read from and written to as described below, but without having to supply `path` or `options` again. The options set at creation can be overridden in any subsequent call, but such overrides apply to a single operation only. `path` cannot be changed after creation.
 
 
 ### <a id='textfilereadpathoptions'>`Textfile.read( path `_`[, options]`_` )`</a>
@@ -72,7 +70,7 @@ _When calling `.write()` on an instance, do not supply `path`._
 
 **Warning: `Textfile.write()` with no arguments will erase the contents of your file, regardless of configuration.**
 
-- `Textfile.write(path, undefined, { json: true })` will write the word `undefined` to the file, which this library will re-interpret as `undefined` upon read, but which other libraries are likely to reject, as `JSON.parse("undefined")` throws in a vanilla JS environment.
+- Writing `undefined` to a JSON-configured file will write the word `undefined` to the file, which this library will re-interpret as `undefined` upon read, but which other libraries are likely to reject, as `JSON.parse("undefined")` throws in a vanilla JS environment.
 
 **TODO: change so that writing `undefined` as JSON will delete the file**
 
@@ -85,7 +83,7 @@ All Textfile calls accept an `options` argument. The following properties and va
 
 | Name | Type | Default | Description |
 | ---: | :--- | :---: | :--- |
-|    `async` | Boolean           | `true`       | whether filesystem operations should be asynchronous; see [Async](#async) |
+|    `async` | Boolean           | `true`       | whether filesystem operations should be asynchronous; see [Async](#Async) |
 | `encoding` | String            | `'utf8'`     | file encoding |
 |     `json` | Boolean           | `true`       | whether file contents should be JSON-encoded |
 | `replacer` | Function or Array | `null`       | if `options.json`, passed to `JSON.stringify(value, replacer, space)` when writing |
