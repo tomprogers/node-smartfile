@@ -1,6 +1,6 @@
 {
   "name": "eztxt4fs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Sync/async sugar for reading and writing text files via the fs module.",
   "license": "MIT",
   "private": false,

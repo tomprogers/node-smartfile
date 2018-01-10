@@ -3,6 +3,7 @@ test/
 .babelrc
 .editorconfig
 .gitignore
+.nvmrc
 .sublime-project
 .travis.yml
 wallaby.js
