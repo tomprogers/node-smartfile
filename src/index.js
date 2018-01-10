@@ -15,7 +15,7 @@ const DefaultOptions = {
 }
 
 
-export default class Textfile {
+class Textfile {
 	constructor(path, options) {
 		if(!path) throw new Error('invalid path')
 
@@ -58,6 +58,7 @@ export default class Textfile {
 
 
 function smartread(path, options) {
+	options = Object.assign({}, DefaultOptions, options)
 	let { json, replacer, reviver, space, ...readFileOpts } = options
 
 	if(options.async) {
@@ -106,6 +107,7 @@ function smartread(path, options) {
 
 
 function smartwrite(path, value, options) {
+	options = Object.assign({}, DefaultOptions, options)
 	let { json, replacer, reviver, space, ...writeFileOpts } = options
 
 	// special handling: when bad value is provided
@@ -183,3 +185,9 @@ function mkdirp(path, opts, extantDirs=[]) {
 
 	return mkdirp(path, opts, mine)
 }
+
+
+Textfile.read = smartread
+Textfile.write = smartwrite
+
+export default Textfile
