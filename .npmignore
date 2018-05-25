@@ -1,9 +1,13 @@
 src/
 test/
+*.sublime-project
+*.sublime-workspace
 .babelrc
 .editorconfig
 .gitignore
+.npmignore
 .nvmrc
-.sublime-project
 .travis.yml
+api-analysis.txt
+npm-shrinkwrap.json
 wallaby.js
