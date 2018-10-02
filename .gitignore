@@ -1,6 +1,8 @@
 // npm conventions
 lib
 node_modules
+yarn-error.log
+yarn.lock
 
 // editors & tools
 *.sublime-workspace
