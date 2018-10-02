@@ -13,6 +13,7 @@
     "email": "tom@roguevendor.com"
   },
   "scripts": {
+    "build": "NODE_ENV=prod babel src --out-dir lib --ignore src/__tests__ --source-maps",
     "clean": "rm -rf lib",
     "compile": "babel src -d lib",
     "prepublish": "npm run compile",
@@ -47,13 +48,15 @@
     "babel-core": "^6.21.0",
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
     "chai": "^4.0.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^3.4.0",
     "mock-fs": "^4.4.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fast-async": "^6.3.8"
+  }
 }
