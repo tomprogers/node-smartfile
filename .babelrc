@@ -1,8 +1,10 @@
 {
 	"plugins": [
-		[ "fast-async", { "compiler": { "promises": true, "generators": false } } ],
-		"transform-object-rest-spread",
-		"transform-object-assign",
-		"transform-es2015-modules-umd"
+		"@babel/plugin-proposal-object-rest-spread",
+		"@babel/plugin-syntax-object-rest-spread",
+		"@babel/plugin-transform-destructuring",
+		"@babel/plugin-transform-parameters",
+		"@babel/plugin-proposal-class-properties",
+		[ "module:fast-async", { "compiler": { "promises": true, "generators": false } } ]
 	]
 }

@@ -1,62 +1,74 @@
 {
-  "name": "eztxt4fs",
-  "version": "1.0.3",
-  "description": "Sync/async sugar for reading and writing text files via the fs module.",
-  "license": "MIT",
-  "private": false,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tomprogers/eztxt4fs.git"
-  },
-  "author": {
-    "name": "Tom Rogers",
-    "email": "tom@roguevendor.com"
-  },
-  "scripts": {
-    "build": "NODE_ENV=prod babel src --out-dir lib --ignore src/__tests__ --source-maps",
-    "clean": "rm -rf lib",
-    "compile": "babel src -d lib",
-    "prepublish": "npm run compile",
-    "start": "mocha --watch --compilers js:babel-register",
-    "test": "mocha --compilers js:babel-register"
-  },
-  "main": "lib/index.js",
-  "keywords": [
-    "async",
-    "electron",
-    "es6",
-    "file",
-    "fs",
-    "json",
-    "mkdir",
-    "mkdirSync",
-    "node",
-    "react-native",
-    "read",
-    "readFile",
-    "readFileSync",
-    "text",
-    "write",
-    "writeFile",
-    "writeFileSync"
-  ],
-  "engines": {
-    "node": ">=5"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.21.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
-    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-register": "^6.18.0",
-    "chai": "^4.0.0",
-    "chai-as-promised": "^7.1.1",
-    "mocha": "^3.4.0",
-    "mock-fs": "^4.4.1"
-  },
-  "dependencies": {
-    "fast-async": "^6.3.8"
-  }
+	"name": "eztxt4fs",
+	"version": "1.0.3",
+	"description": "Sync/async sugar for reading and writing text files via the fs module.",
+	"license": "MIT",
+	"private": false,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tomprogers/eztxt4fs.git"
+	},
+	"author": {
+		"name": "Tom Rogers",
+		"email": "tom@roguevendor.com"
+	},
+	"scripts": {
+		"clean": "rm -rf lib",
+		"build": "NODE_ENV=prod babel src --ignore src/__tests__ --out-dir lib  --source-maps",
+		"prepublish": "yarn build",
+		"test": "jest --no-cache --runInBand",
+		"test:coverage": "jest --coverage",
+		"start": "mocha --watch --compilers js:babel-register"
+	},
+	"main": "lib/index.js",
+	"keywords": [
+		"async",
+		"electron",
+		"es6",
+		"file",
+		"fs",
+		"json",
+		"mkdir",
+		"mkdirSync",
+		"node",
+		"react-native",
+		"read",
+		"readFile",
+		"readFileSync",
+		"text",
+		"write",
+		"writeFile",
+		"writeFileSync"
+	],
+	"engines": {
+		"node": ">=5"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.1.2",
+		"@babel/plugin-proposal-class-properties": "^7.1.0",
+		"@babel/plugin-proposal-decorators": "^7.1.6",
+		"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+		"@babel/plugin-syntax-decorators": "^7.1.0",
+		"@babel/plugin-syntax-object-rest-spread": "^7.0.0",
+		"@babel/plugin-transform-destructuring": "^7.1.3",
+		"@babel/plugin-transform-parameters": "^7.1.0",
+		"@babel/preset-react": "^7.0.0",
+		"mock-fs": "^4.4.1"
+	},
+	"dependencies": {
+		"@babel/cli": "^7.1.5",
+		"fast-async": "7",
+		"jest": "^23.6.0"
+	},
+	"jest": {
+		"testEnvironment": "node",
+		"verbose": true,
+		"testPathIgnorePatterns": [
+			"/node_modules/"
+		],
+		"collectCoverageFrom": [
+			"src/**/*.js",
+			"!**/node_modules/**"
+		]
+	}
 }
