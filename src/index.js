@@ -1,3 +1,3 @@
-import Textfile from './textfile.js'
+const Textfile = require('./textfile.js')
 
-export default Textfile
+module.exports = Textfile.default
