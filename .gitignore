@@ -1,0 +1,7 @@
+// npm conventions
+dist
+node_modules
+*.log
+
+// OS garbage
+.DS_Store
