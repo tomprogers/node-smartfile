@@ -1,9 +1,8 @@
 // npm conventions
-lib
+coverage
+dist
 node_modules
-
-// editors & tools
-*.sublime-workspace
+*.log
 
 // OS garbage
 .DS_Store
