@@ -1,8 +1,3 @@
-import Value from './value.js'
-import smartread from './smart-read.js'
-import smartwrite from './smart-write.js'
+import Textfile from './textfile.js'
 
-
-module.exports = () => {
-	return Value
-}
+export default Textfile
