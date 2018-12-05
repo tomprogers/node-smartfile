@@ -1,26 +1,18 @@
 {
 	"name": "eztxt4fs",
-	"version": "1.0.3",
+	"version": "1.1.0",
 	"description": "Sync/async sugar for reading and writing text files via the fs module.",
-	"license": "MIT",
-	"private": false,
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "NODE_ENV=prod babel src --ignore src/__tests__ --out-dir dist --source-maps",
+		"prepublish": "yarn build",
+		"test": "jest --no-cache --runInBand",
+		"test:coverage": "jest --coverage"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tomprogers/eztxt4fs.git"
 	},
-	"author": {
-		"name": "Tom Rogers",
-		"email": "tom@roguevendor.com"
-	},
-	"scripts": {
-		"clean": "rm -rf lib",
-		"build": "NODE_ENV=prod babel src --ignore src/__tests__ --out-dir lib  --source-maps",
-		"prepublish": "yarn build",
-		"test": "jest --no-cache --runInBand",
-		"test:coverage": "jest --coverage",
-		"start": "mocha --watch --compilers js:babel-register"
-	},
-	"main": "lib/index.js",
 	"keywords": [
 		"async",
 		"electron",
@@ -40,29 +32,33 @@
 		"writeFile",
 		"writeFileSync"
 	],
+	"author": {
+		"name": "Tom Rogers",
+		"email": "tom@roguevendor.com"
+	},
+	"license": "MIT",
+	"private": false,
 	"engines": {
 		"node": ">=5"
 	},
-	"devDependencies": {
-		"@babel/core": "^7.1.2",
-		"@babel/plugin-proposal-class-properties": "^7.1.0",
-		"@babel/plugin-proposal-decorators": "^7.1.6",
-		"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-		"@babel/plugin-syntax-decorators": "^7.1.0",
-		"@babel/plugin-syntax-object-rest-spread": "^7.0.0",
-		"@babel/plugin-transform-destructuring": "^7.1.3",
-		"@babel/plugin-transform-parameters": "^7.1.0",
-		"@babel/preset-react": "^7.0.0",
-		"mock-fs": "^4.4.1"
-	},
 	"dependencies": {
-		"@babel/cli": "^7.1.5",
-		"fast-async": "7",
-		"jest": "^23.6.0"
+		"mkdirp": "^0.5.1"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.0",
+		"babel-eslint": "^8.0.0",
+		"babel-jest": "^22.0.4",
+		"babel-plugin-module-resolver": "^3.0.0",
+		"babel-plugin-transform-class-properties": "^6.24.1",
+		"babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+		"babel-plugin-transform-object-assign": "^6.22.0",
+		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"fast-async": "^6.3.7",
+		"jest": "^23.0.0"
 	},
 	"jest": {
 		"testEnvironment": "node",
-		"verbose": true,
 		"testPathIgnorePatterns": [
 			"/node_modules/"
 		],
