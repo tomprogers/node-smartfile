@@ -1,5 +1,5 @@
 src/
-test/
+dist/
 *.sublime-project
 *.sublime-workspace
 .babelrc
