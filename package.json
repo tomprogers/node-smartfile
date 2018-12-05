@@ -22,6 +22,7 @@
 		"json",
 		"mkdir",
 		"mkdirSync",
+		"mkdirp",
 		"node",
 		"react-native",
 		"read",

@@ -1,13 +1,9 @@
-src/
-dist/
-*.sublime-project
-*.sublime-workspace
+src/__tests__
 .babelrc
-.editorconfig
 .gitignore
 .npmignore
 .nvmrc
-.travis.yml
 api-analysis.txt
-npm-shrinkwrap.json
-wallaby.js
+*.sublime-project
+*.sublime-workspace
+yarn.lock
