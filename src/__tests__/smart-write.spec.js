@@ -1,7 +1,7 @@
-import smartwrite from '../smart-write.js'
-import FS from 'fs'
-import Path from 'path'
-import ambifs from '../fs-ambi'
+const FS = require('fs')
+const Path = require('path')
+const ambifs = require('../fs-ambi')
+const smartwrite = require('../smart-write')
 
 
 describe('smartwrite', () => {

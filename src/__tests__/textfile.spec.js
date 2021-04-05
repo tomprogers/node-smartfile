@@ -1,4 +1,4 @@
-import Textfile from '../textfile.js'
+const Textfile = require('../textfile')
 
 
 describe(`Textfile`, () => {

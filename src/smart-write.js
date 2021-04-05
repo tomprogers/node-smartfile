@@ -1,24 +1,18 @@
-import DefaultOptions from './default-options.js'
-import ambifs from './fs-ambi'
-import Path from 'path'
+const Path = require('path')
+const DefaultOptions = require('./default-options')
+const ambifs = require('./fs-ambi')
 
 
-export default function smartwrite(path, value, options) {
+module.exports = function smartwrite( path, value, options ) {
 	options = { ...DefaultOptions, ...options }
 
-	if(options.async) {
-		return write_async(path, value, options)
-
-	} else {
-		return write_sync(path, value, options)
-
-	}
-
+	return options.async
+		? write_async(path, value, options)
+		: write_sync(path, value, options)
 }
 
 
-
-async function write_async(path, value, options) {
+async function write_async( path, value, options ) {
 	let {
 		json,
 		replacer,
@@ -36,18 +30,17 @@ async function write_async(path, value, options) {
 			finalValue = ''
 
 		} else if(typeof value !== 'string') {
-			throw new TypeError(`${typeof value} is not a string`)
+			throw new TypeError('value must be a string')
 
 		} else {
 			finalValue = value
-
 		}
 	}
 
 	try {
 		return await ambifs.writeFile(path, finalValue, writeFileOpts)
 
-	} catch(error) {
+	} catch( error ) {
 		// we swallow "dirs don't exist" errors because we can remedy that
 		if(error.code === 'ENOENT') {
 			await ambifs.mkdirp(Path.dirname(path), writeFileOpts)
@@ -55,13 +48,11 @@ async function write_async(path, value, options) {
 		}
 
 		throw error
-
 	}
 }
 
 
-
-function write_sync(path, value, options) {
+function write_sync( path, value, options ) {
 	let {
 		json,
 		replacer,
@@ -79,21 +70,19 @@ function write_sync(path, value, options) {
 			finalValue = ''
 
 		} else if (typeof value !== 'string') {
-			throw new Error(`${typeof value} is not a string`)
-
+			throw new TypeError('value must be a string')
 		}
 	}
 
 	try {
 		return ambifs.writeFile(path, finalValue, writeFileOpts)
 
-	} catch (error) {
+	} catch ( error ) {
 		if(error.code === 'ENOENT') {
 			ambifs.mkdirp(Path.dirname(path), writeFileOpts)
 			return write_sync(path, value, options)
 		}
 
 		throw error
-
 	}
 }

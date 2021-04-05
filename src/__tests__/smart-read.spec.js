@@ -1,5 +1,5 @@
-import smartread from '../smart-read.js'
-import FS from 'fs'
+const FS = require('fs')
+const smartread = require('../smart-read')
 
 
 describe('smartread', () => {

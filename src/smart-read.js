@@ -1,23 +1,17 @@
-import DefaultOptions from './default-options.js'
-import ambifs from './fs-ambi'
+const DefaultOptions = require('./default-options')
+const ambifs = require('./fs-ambi')
 
 
-export default function smartread(path, options) {
+module.exports = function smartread( path, options ) {
 	options = { ...DefaultOptions, ...options }
 
-	if(options.async) {
-		return read_async(path, options)
-
-	} else {
-		return read_sync(path, options)
-
-	}
-
+	return options.async
+		? read_async(path, options)
+		: read_sync(path, options)
 }
 
 
-
-async function read_async(path, options) {
+async function read_async( path, options ) {
 	let {
 		json,
 		replacer,
@@ -30,21 +24,18 @@ async function read_async(path, options) {
 	try {
 		contents = await ambifs.readFile(path, readFileOpts)
 
-	} catch (error) {
+	} catch ( error ) {
 		// special handling: return undefined for non-existent files
 		if (error.code === 'ENOENT') return
 
 		throw error
-
 	}
-
 
 	return grokFile(contents, json, reviver)
 }
 
 
-
-function read_sync(path, options) {
+function read_sync( path, options ) {
 	let {
 		json,
 		replacer,
@@ -68,8 +59,7 @@ function read_sync(path, options) {
 }
 
 
-
-function grokFile(contents, json, reviver) {
+function grokFile( contents, json, reviver ) {
 	if (!json) return contents
 
 	try {
@@ -85,6 +75,5 @@ function grokFile(contents, json, reviver) {
 		}
 
 		throw error
-
 	}
 }

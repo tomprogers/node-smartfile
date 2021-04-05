@@ -1,10 +1,10 @@
-import readFile from './read-file.js'
-import writeFile from './write-file.js'
-import mkdir from './mkdir.js'
-import mkdirp from './mkdirp.js'
+const readFile = require('./read-file')
+const writeFile = require('./write-file')
+const mkdir = require('./mkdir')
+const mkdirp = require('./mkdirp')
 
 
-export default {
+module.exports = {
 	readFile,
 	writeFile,
 	mkdir,
