@@ -5,7 +5,7 @@ const smartwrite = require('./smart-write')
 class Textfile {
 
 	constructor( path, options ) {
-		if (!path) throw new Error('invalid path')
+		if(typeof path !== 'string') throw new TypeError('path must be a string')
 
 		this.read = ( opts ) => smartread(path, opts)
 		this.write = ( value, opts ) => smartwrite(path, value, opts)
