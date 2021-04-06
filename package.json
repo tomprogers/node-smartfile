@@ -27,7 +27,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": ">=5"
+    "node": ">=10"
   },
   "dependencies": {
     "mkdirp": "^0.5.1"
