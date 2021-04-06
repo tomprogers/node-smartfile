@@ -1,15 +1,14 @@
-import mkdirp_cmd from 'mkdirp'
+const mkdirp_cmd = require('mkdirp')
 
 
-export default function mkdirp(path, options) {
+module.exports = function mkdirp( path, options ) {
 	let { async, ...fsOpts } = options
 
-	if (async)
-		return new Promise(
-			(resolve, reject) => mkdirp_cmd(path, fsOpts, (error, made) => error ? reject(error) : resolve(made))
-		)
+	if(!async) return mkdirp_cmd.sync(path, fsOpts)
 
-	else
-		return mkdirp_cmd.sync(path, fsOpts)
-
+	return new Promise(( resolve, reject ) => mkdirp_cmd(
+		path,
+		fsOpts,
+		( error, made ) => error ? reject(error) : resolve(made)
+	))
 }

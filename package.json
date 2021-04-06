@@ -1,71 +1,38 @@
 {
-	"name": "eztxt4fs",
-	"version": "1.1.0",
-	"description": "Sync/async sugar for reading and writing text files via the fs module.",
-	"main": "dist/index.js",
-	"scripts": {
-		"build": "NODE_ENV=prod babel src --ignore src/__tests__ --out-dir dist --source-maps",
-		"prepublish": "yarn build",
-		"test": "jest --no-cache --runInBand",
-		"test:coverage": "jest --coverage"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tomprogers/eztxt4fs.git"
-	},
-	"keywords": [
-		"async",
-		"electron",
-		"es6",
-		"file",
-		"fs",
-		"json",
-		"mkdir",
-		"mkdirSync",
-		"mkdirp",
-		"node",
-		"react-native",
-		"read",
-		"readFile",
-		"readFileSync",
-		"text",
-		"write",
-		"writeFile",
-		"writeFileSync"
-	],
-	"author": {
-		"name": "Tom Rogers",
-		"email": "tom@roguevendor.com"
-	},
-	"license": "MIT",
-	"private": false,
-	"engines": {
-		"node": ">=5"
-	},
-	"dependencies": {
-		"mkdirp": "^0.5.1"
-	},
-	"devDependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-core": "^6.26.0",
-		"babel-eslint": "^8.0.0",
-		"babel-jest": "^22.0.4",
-		"babel-plugin-module-resolver": "^3.0.0",
-		"babel-plugin-transform-class-properties": "^6.24.1",
-		"babel-plugin-transform-es2015-modules-umd": "^6.24.1",
-		"babel-plugin-transform-object-assign": "^6.22.0",
-		"babel-plugin-transform-object-rest-spread": "^6.26.0",
-		"fast-async": "^6.3.7",
-		"jest": "^23.0.0"
-	},
-	"jest": {
-		"testEnvironment": "node",
-		"testPathIgnorePatterns": [
-			"/node_modules/"
-		],
-		"collectCoverageFrom": [
-			"src/**/*.js",
-			"!**/node_modules/**"
-		]
-	}
+  "name": "eztxt4fs",
+  "version": "2.0.0",
+  "description": "Sync/async sugar for reading and writing text files via the fs module",
+  "author": "Tom Rogers <tom@roguevendor.com>",
+  "private": false,
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": "github:tomprogers/eztxt4fs",
+  "keywords": [
+    "electron",
+    "file",
+    "fs",
+    "json",
+    "mkdir",
+    "mkdirSync",
+    "mkdirp",
+    "node",
+    "react-native",
+    "readFile",
+    "readFileSync",
+    "text",
+    "writeFile",
+    "writeFileSync"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
 }

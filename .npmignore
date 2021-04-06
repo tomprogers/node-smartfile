@@ -1,9 +1,9 @@
-src/__tests__
-.babelrc
 .gitignore
 .npmignore
 .nvmrc
+.vscode/
 api-analysis.txt
-*.sublime-project
-*.sublime-workspace
+icon.png
+src/__tests__
+workspace.*
 yarn.lock

@@ -1,21 +1,19 @@
-import smartread from './smart-read.js'
-import smartwrite from './smart-write.js'
+const smartread = require('./smart-read')
+const smartwrite = require('./smart-write')
 
 
 class Textfile {
 
-	constructor(path, options) {
-		if (!path) throw new Error('invalid path')
+	constructor( path, options={} ) {
+		if(typeof path !== 'string') throw new TypeError('path must be a string')
 
-		this.read = (opts) => smartread(path, opts)
-		this.write = (value, opts) => smartwrite(path, value, opts)
+		this.read  = ( opts        ) => smartread (path,        { ...options, ...opts })
+		this.write = ( value, opts ) => smartwrite(path, value, { ...options, ...opts })
 	}
 
 }
 
-
 Textfile.read = smartread
 Textfile.write = smartwrite
 
-
-export default Textfile
+module.exports = Textfile

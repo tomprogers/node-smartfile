@@ -1,8 +1,5 @@
-// npm conventions
-coverage
-dist
-node_modules
-*.log
-
-// OS garbage
 .DS_Store
+.vscode
+*.log
+coverage/
+node_modules/

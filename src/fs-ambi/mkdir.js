@@ -1,15 +1,14 @@
-import FS from 'fs'
+const FS = require('fs')
 
 
-export default function mkdir(path, options) {
+module.exports = function mkdir( path, options ) {
 	let { async, ...fsOpts } = options
 
-	if (async)
-		return new Promise(
-			(resolve, reject) => FS.mkdir(path, fsOpts, (error) => error ? reject(error) : resolve())
-		)
+	if (!async) return FS.mkdirSync(path, fsOpts)
 
-	else
-		return FS.mkdirSync(path, fsOpts)
-
+	return new Promise(( resolve, reject ) => FS.mkdir(
+		path,
+		fsOpts,
+		( error ) => error ? reject(error) : resolve()
+	))
 }
