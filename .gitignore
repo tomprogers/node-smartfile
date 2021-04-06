@@ -2,5 +2,4 @@
 .vscode
 *.log
 coverage/
-dist/
 node_modules/

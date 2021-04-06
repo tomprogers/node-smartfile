@@ -7,6 +7,5 @@ module.exports = {
 		'src/**/*.js',
 		'!src/**/*.spec.js',
 		'!**/node_modules/**'
-	],
-	setupFilesAfterEnv: ['<rootDir>/jest.setup.js']
+	]
 }

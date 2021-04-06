@@ -3,7 +3,6 @@
 .nvmrc
 .vscode/
 api-analysis.txt
-babel.config.js
 icon.png
 src/__tests__
 workspace.*
